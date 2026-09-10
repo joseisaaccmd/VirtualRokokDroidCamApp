@@ -1,0 +1,290 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  background: #050505;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+
+body { background: #050505; }
+
+.experience {
+  position: fixed;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #303033 0%, #171719 34%, #050505 78%);
+}
+
+.camera {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.experience[data-camera="ready"] .camera { opacity: 1; }
+
+.render-canvas,
+.debug-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.render-canvas { z-index: 1; }
+.debug-canvas { z-index: 2; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.debug-panel {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  left: 18px;
+  width: 300px;
+  padding: 15px 16px 13px;
+  color: #eef0ed;
+  background: rgb(8 9 9 / 82%);
+  border: 1px solid rgb(255 130 53 / 45%);
+  box-shadow: 0 14px 40px rgb(0 0 0 / 34%);
+  backdrop-filter: blur(10px);
+  font-family: Consolas, "SFMono-Regular", monospace;
+  pointer-events: none;
+}
+
+.debug-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 9px;
+  color: #ff843c;
+  border-bottom: 1px solid rgb(255 255 255 / 14%);
+  font-size: 11px;
+  letter-spacing: .12em;
+}
+
+.debug-heading b { color: #e7ebe8; font-weight: 600; }
+
+.debug-panel dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.debug-panel dt { color: rgb(230 233 230 / 52%); }
+.debug-panel dd { margin: 0; color: #f2f3ef; text-align: right; }
+.debug-panel .debug-gpu-name { max-width: 154px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.debug-panel p { margin: 11px 0 0; color: rgb(255 255 255 / 35%); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* Camera Selector */
+.camera-selector-wrapper {
+  position: absolute;
+  z-index: 10;
+  top: 18px;
+  right: 18px;
+}
+
+.camera-selector-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgb(8 9 9 / 82%);
+  border: 1px solid rgb(255 130 53 / 35%);
+  border-radius: 8px;
+  color: #eef0ed;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+
+.camera-selector-toggle:hover {
+  border-color: rgb(255 130 53 / 70%);
+  background: rgb(8 9 9 / 92%);
+}
+
+.camera-selector-label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.droidcam-badge {
+  padding: 2px 6px;
+  background: rgb(76 175 80 / 25%);
+  color: #81c784;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.camera-selector-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 260px;
+  max-width: 340px;
+  background: rgb(12 13 13 / 95%);
+  border: 1px solid rgb(255 130 53 / 35%);
+  border-radius: 10px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 50%);
+  overflow: hidden;
+}
+
+.camera-selector-header {
+  padding: 10px 14px 8px;
+  color: #ff843c;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+}
+
+.camera-selector-empty {
+  padding: 16px 14px;
+  color: rgb(255 255 255 / 40%);
+  font-size: 11px;
+  text-align: center;
+}
+
+.camera-selector-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  color: #eef0ed;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.camera-selector-option:hover {
+  background: rgb(255 130 53 / 10%);
+}
+
+.camera-selector-option.active {
+  background: rgb(255 130 53 / 15%);
+  color: #ff843c;
+}
+
+.camera-selector-option.droidcam-device {
+  color: #81c784;
+}
+
+.camera-selector-option.droidcam-device.active {
+  color: #81c784;
+  background: rgb(76 175 80 / 15%);
+}
+
+.droidcam-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.checkmark {
+  margin-left: auto;
+  color: #ff843c;
+  font-weight: 600;
+}
+
+.camera-selector-refresh {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+  color: rgb(255 255 255 / 50%);
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.camera-selector-refresh:hover {
+  color: #ff843c;
+  background: rgb(255 130 53 / 8%);
+}
+
+/* DroidCam Hint */
+.droidcam-hint {
+  position: absolute;
+  z-index: 10;
+  bottom: 18px;
+  left: 18px;
+  max-width: 320px;
+  padding: 14px 16px;
+  background: rgb(8 9 9 / 82%);
+  border: 1px solid rgb(76 175 80 / 35%);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 30%);
+}
+
+.droidcam-hint-title {
+  margin: 0 0 10px;
+  color: #81c784;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.droidcam-hint-steps {
+  margin: 0;
+  padding-left: 18px;
+  color: rgb(230 233 230 / 70%);
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.droidcam-hint-steps li {
+  margin-bottom: 3px;
+}
+
+.droidcam-hint-steps strong {
+  color: #e7ebe8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera { transition: none; }
+}
